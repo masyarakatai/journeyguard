@@ -1,0 +1,36 @@
+name: Bug report
+description: A false alarm, a missed failure, or something that does not work
+labels: [bug]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What happened?
+      options:
+        - False alarm (JourneyGuard says it failed, but the site works)
+        - Missed failure (the site was broken, JourneyGuard said it passed)
+        - Crash or error in JourneyGuard itself
+        - Other
+    validations: { required: true }
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and preset
+      placeholder: e.g. WooCommerce 9.x with block checkout, preset woocommerce
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: The stage and error shown on the dashboard, and what you expected. Screenshots help (remove private data).
+    validations: { required: true }
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant configuration
+      description: The journey from journeyguard.yml, without secrets.
+      render: yaml
+  - type: input
+    id: version
+    attributes:
+      label: Version and how you run it
+      placeholder: e.g. 0.1.0, Docker on Ubuntu 24.04

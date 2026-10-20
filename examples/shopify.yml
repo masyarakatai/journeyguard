@@ -1,0 +1,11 @@
+# A Shopify store. Shopify may show a bot challenge on checkout; JourneyGuard then reports
+# the stage as "not tested" instead of a false alarm.
+sites:
+  - name: My Shopify Store
+    url: https://my-store.myshopify.com
+    journeys:
+      - preset: website
+      - preset: shopify
+        options:
+          # productHandle: test-product
+          payment: true

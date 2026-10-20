@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22, 24, 26]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps --only-shell chromium
+      - run: npm test
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: journeyguard:ci
+      - name: Chromium starts inside the image
+        run: |
+          docker run --rm --entrypoint node journeyguard:ci -e "import('playwright').then(async ({ chromium }) => { const b = await chromium.launch(); console.log('Chromium', b.version()); await b.close(); })"
+      - name: CLI runs inside the image, from any working directory
+        run: |
+          docker run --rm journeyguard:ci --version
+          docker run --rm -w /tmp journeyguard:ci --version
+          docker run --rm --entrypoint journeyguard journeyguard:ci --version
+      - name: Demo journeys pass inside the image
+        run: |
+          docker run -d --name demo -p 8080:8080 --shm-size=1g journeyguard:ci demo --host 0.0.0.0
+          for i in $(seq 1 60); do curl -fsS localhost:8080/healthz >/dev/null 2>&1 && break; sleep 2; done
+          curl -fsS localhost:8080/healthz
+          docker logs demo
+          docker rm -f demo
+      - name: Image size
+        run: docker image ls journeyguard:ci --format '{{.Repository}}:{{.Tag}} {{.Size}}' | tee -a "$GITHUB_STEP_SUMMARY"
+
+  # The release builds amd64 and arm64; build both on main so a broken arm64 image never blocks a release.
+  docker-multiarch:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false

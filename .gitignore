@@ -1,0 +1,7 @@
+node_modules
+dist/
+journeyguard-data/
+*.log
+.env
+journeyguard.yml
+!examples/*.yml

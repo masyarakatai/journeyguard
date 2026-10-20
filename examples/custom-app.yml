@@ -1,0 +1,34 @@
+# A custom business application: log in and confirm the key screen loads.
+# Use a dedicated low-privilege monitoring account, never a real admin.
+settings:
+  interval: 10m
+  timeout: 20s
+
+sites:
+  - name: Booking system
+    url: https://app.example.com
+    headers:
+      X-Monitor-Token: ${APP_MONITOR_TOKEN}   # optional: lets your firewall allow-list the monitor
+    journeys:
+      - name: Staff login and bookings
+        stages:
+          - name: Login page
+            steps:
+              - goto: /login
+              - expectVisible: form#login
+          - name: Sign in
+            steps:
+              - fill: { selector: '#email', value: '${APP_MONITOR_USER}' }
+              - fill: { selector: '#password', value: '${APP_MONITOR_PASSWORD}' }
+              - click: button[type=submit]
+              - expectUrl: /dashboard
+          - name: Bookings list
+            steps:
+              - click: { text: Bookings }
+              - expectVisible: [table.bookings, '[data-test=bookings-table]']
+              - expectNoText: Internal Server Error
+      - name: Public booking form
+        steps:
+          - goto: /book
+          - select: { selector: '#service', value: consultation }
+          - expectText: Choose a time

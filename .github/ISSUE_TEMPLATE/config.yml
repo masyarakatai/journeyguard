@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/nxdpro/journeyguard/discussions
+    about: Ask how to monitor a specific site or share what you built.
+  - name: Free shop check, professional help or managed monitoring
+    url: https://www.nxdpro.com/?utm_source=github&utm_medium=issues&utm_campaign=journeyguard
+    about: NXDPRO, the maintainers, can check your shop for free, fix what JourneyGuard finds or run it for you (info@nxdpro.com).

@@ -1,0 +1,30 @@
+# A WooCommerce shop: full purchase journey (stops before payment), contact form and site health.
+settings:
+  interval: 15m
+  language: en
+  dashboard:
+    password: ${JOURNEYGUARD_PASSWORD}
+
+alerts:
+  - type: telegram
+    botToken: ${TELEGRAM_BOT_TOKEN}
+    chatId: ${TELEGRAM_CHAT_ID}
+
+sites:
+  - name: My Shop
+    url: https://shop.example.com
+    journeys:
+      - preset: website
+        options:
+          pages: [/shop/, /about/]
+      - preset: woocommerce
+        options:
+          # Optional: pin a cheap, always-in-stock product instead of auto-discovery.
+          # productUrl: /product/test-product/
+          # cartPath: /kalathi/          # if your cart page has a custom slug
+          # expectPayments: [Viva, Αντικαταβολή]   # alert if one of these disappears, not only when all do
+          # checkoutPath: /tameio/
+      - preset: contact-form
+        options:
+          path: /contact/
+          email: monitor@shop.example.com   # use an address you can filter

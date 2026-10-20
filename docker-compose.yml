@@ -1,0 +1,23 @@
+# 1. Create journeyguard.yml and .env next to this file with the guided setup:
+#      docker run --rm -it --user "$(id -u):$(id -g)" -v "$PWD:/config" ghcr.io/nxdpro/journeyguard init --config /config/journeyguard.yml
+# 2. docker compose up -d   ->   dashboard on http://<server>:8080 (user: any, password: JOURNEYGUARD_PASSWORD from .env)
+# 3. Check your alert channels: docker compose run --rm journeyguard test-alerts
+services:
+  journeyguard:
+    image: ghcr.io/nxdpro/journeyguard:latest
+    restart: unless-stopped
+    ports:
+      # Behind a reverse proxy (Caddy, nginx, Traefik) publish on localhost only: "127.0.0.1:8080:8080"
+      - "8080:8080"
+    # .env holds JOURNEYGUARD_PASSWORD and every variable journeyguard.yml references (TELEGRAM_BOT_TOKEN, SMTP_URL, ...).
+    env_file: .env
+    environment:
+      JOURNEYGUARD_PASSWORD: ${JOURNEYGUARD_PASSWORD:?Set JOURNEYGUARD_PASSWORD in .env (at least 10 characters)}
+    volumes:
+      - ./journeyguard.yml:/config/journeyguard.yml:ro
+      - journeyguard-data:/data
+    # Chromium needs more shared memory than Docker's 64 MB default.
+    shm_size: 1gb
+
+volumes:
+  journeyguard-data:

@@ -1,0 +1,28 @@
+name: Platform / preset request
+description: Ask for (or offer to build) support for a platform or a common journey
+labels: [preset]
+body:
+  - type: input
+    id: platform
+    attributes:
+      label: Platform or journey
+      placeholder: e.g. PrestaShop 8 checkout, OpenCart, booking form, newsletter sign-up
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes:
+      label: The journey customers take
+      description: List the steps and what "it works" looks like on each one.
+    validations: { required: true }
+  - type: textarea
+    id: failures
+    attributes:
+      label: Failures you have seen in the wild
+      description: What breaks on this platform in real life? This is what the preset should catch.
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Can you help?
+      options:
+        - label: I can test against a staging site
+        - label: I would like to write the preset myself

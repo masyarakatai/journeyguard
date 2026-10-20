@@ -1,0 +1,36 @@
+# An agency monitoring several client sites, with Greek reports and alerts under its own brand.
+settings:
+  interval: 15m
+  language: el
+  report:
+    brandName: Your Agency
+    brandUrl: https://your-agency.example
+    poweredBy: false
+  dashboard:
+    host: 0.0.0.0
+    password: ${JOURNEYGUARD_PASSWORD}
+    publicUrl: https://monitor.your-agency.example
+
+alerts:
+  - type: discord
+    webhookUrl: ${DISCORD_WEBHOOK_URL}
+  - type: email
+    smtp: ${SMTP_URL}
+    from: monitor@your-agency.example
+    to: [support@your-agency.example]
+
+sites:
+  - name: Client A – eShop
+    url: https://client-a.gr
+    journeys:
+      - preset: website
+      - preset: woocommerce
+      - preset: contact-form
+        options: { path: /epikoinonia/ }
+  - name: Client B – Corporate site
+    url: https://client-b.com.cy
+    journeys:
+      - preset: website
+        options: { pages: [/services/, /contact/] }
+      - preset: contact-form
+        options: { path: /contact/, successText: Thank you }

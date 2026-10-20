@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      dev-dependencies:
+        dependency-type: development
+      runtime-dependencies:
+        dependency-type: production
+    ignore:
+      # The types follow the oldest supported Node.js version (package.json engines).
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    groups:
+      actions:
+        patterns: ['*']
+  - package-ecosystem: docker
+    directory: /
+    schedule: { interval: monthly }
+    ignore:
+      # Stay on the Node LTS line the image is tested with; move to the next LTS by hand.
+      - dependency-name: node
+        update-types: ['version-update:semver-major']
