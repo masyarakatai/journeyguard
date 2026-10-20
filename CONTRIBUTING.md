@@ -45,4 +45,10 @@ The code is TypeScript (ES modules, Node 22+). Useful places:
 - `npm test` must pass. CI runs it on Node 22, 24 and 26 and builds the Docker image (amd64 and arm64).
 - Add a line to `CHANGELOG.md` under *Unreleased*.
 
+## Releasing (maintainers)
+
+1. Set the new version in `package.json` (`npm version 0.2.0 --no-git-tag-version`) and move the *Unreleased* notes in `CHANGELOG.md` under `## [0.2.0] - <date>`.
+2. Merge to `main` and wait for CI.
+3. Actions → **Release** → **Run workflow**. It tests again, tags `v0.2.0`, publishes the Docker image (and npm, when `NPM_TOKEN` is set) and creates the GitHub release with the changelog section as notes. Pushing a `v0.2.0` tag does the same. Versions with a suffix such as `0.2.0-beta.1` become pre-releases and never move `latest`.
+
 By contributing you agree that your contribution is licensed under the MIT license, and you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
