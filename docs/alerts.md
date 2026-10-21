@@ -4,6 +4,7 @@ JourneyGuard sends an alert when a journey **breaks** (passing → failing) and 
 
 - If no channel accepted an alert (for example Telegram was briefly down), it is sent again on the next run, so an outage is never silently missed.
 - A run that could not verify the broken step (a CAPTCHA or firewall challenge appeared) is not reported as a recovery.
+- If a firewall or bot-protection challenge appears, see [Allow-listing JourneyGuard](firewalls.md) for Cloudflare, Wordfence, Sucuri and Imunify360 guidance.
 - When the monitor itself fails (the browser crashed, the server ran out of memory) no outage alert is sent; the dashboard shows a *Monitor* warning. After 3 checks in a row cannot run, you get a single "JourneyGuard cannot run checks" alert, and a "checking again" alert once it works.
 - `journeyguard run --no-alerts` ignores the `alerts` section completely, so CI runs do not need the alert secrets.
 
