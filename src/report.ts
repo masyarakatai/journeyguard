@@ -69,7 +69,7 @@ export async function renderReport(views: JourneyView[], settings: Settings, art
   const body = `<div class="wrap">
 <header class="top"><div class="brand">${brandHtml}</div><span class="spacer"></span><div class="summary">${summaryPills(views, lang)}</div></header>
 <h1 class="headline">${h(t(lang, 'report'))}: ${problems ? `${problems} ${h(t(lang, problems === 1 ? 'problemFound' : 'problemsFound'))}` : h(t(lang, 'noProblems'))}</h1>
-<div class="report-meta"><span>${h(t(lang, 'generated'))}: ${h(new Date().toLocaleString(lang === 'el' ? 'el-GR' : 'en-GB'))}</span></div>
+<div class="report-meta"><span>${h(t(lang, 'generated'))}: ${h(new Date().toLocaleString(lang === 'el' ? 'el-GR' : lang === 'es' ? 'es-ES' : 'en-GB'))}</span></div>
 ${renderSites(views, { lang, artifactSrc: (run, file) => (file === run.evidence?.screenshot ? images.get(`${run.siteId}/${run.journeyId}/${run.id}`) : undefined) })}
 ${settings.report.poweredBy ? `<footer class="foot">${h(t(lang, 'poweredBy'))} · <a href="https://github.com/nxdpro/journeyguard">github.com/nxdpro/journeyguard</a></footer>` : ''}
 </div>`;

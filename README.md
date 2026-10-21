@@ -83,7 +83,7 @@ journeyguard demo
 
 Requirements: a small VPS or any machine with Docker (1 vCPU and 1–2 GB RAM check dozens of journeys). No database: results are plain JSON and PNG files.
 
-**1. Guided setup.** A few questions in English or Greek: your site's address (WooCommerce, Shopify and WordPress are detected automatically) and where alerts should go. For Telegram it finds your chat by itself and sends a test message. It writes `journeyguard.yml` and a private `.env` with a generated dashboard password.
+**1. Guided setup.** A few questions in English, Greek or Spanish: your site's address (WooCommerce, Shopify and WordPress are detected automatically) and where alerts should go. For Telegram it finds your chat by itself and sends a test message. It writes `journeyguard.yml` and a private `.env` with a generated dashboard password.
 
 ```bash
 mkdir journeyguard && cd journeyguard
@@ -114,7 +114,7 @@ See [deployment](docs/deployment.md) for reverse proxies, systemd and CI.
 ```yaml
 settings:
   interval: 15m
-  language: en          # en | el — reports and alerts in English or Greek
+  language: en          # en | el | es — reports and alerts in English, Greek or Spanish
 
 alerts:
   - type: telegram
@@ -159,7 +159,7 @@ Presets discover products and pages on their own, so most sites need no selector
 - **An alert** on Telegram, Discord, Slack, email or any webhook, only when a journey breaks and when it recovers, never every 5 minutes. Telegram, Discord and email include the screenshot.
 - **The exact step** that failed and the steps that were never reached.
 - **Evidence**: screenshot, page URL and HTTP status, browser console errors, failed network requests.
-- **A likely cause** in plain English or Greek, e.g. *"Customers lose their cart at checkout: cart and checkout pages are probably being cached."*
+- **A likely cause** in plain English, Greek or Spanish, e.g. *"Customers lose their cart at checkout: cart and checkout pages are probably being cached."*
 - **A self-contained HTML report** you can email to a client (`journeyguard run --report report.html`), white-label ready.
 - **A health check for the monitor itself**: if JourneyGuard cannot run its checks (for example the browser no longer starts), it tells you once, and `/healthz` answers 503.
 
@@ -180,7 +180,7 @@ Presets discover products and pages on their own, so most sites need no selector
 - **From an uptime or keyword monitor** (Uptime Kuma, UptimeRobot): those load one URL. JourneyGuard adds a product to the cart, opens checkout and checks the payment methods, with the cookies and JavaScript of a real visit.
 - **From Checkly, Datadog Synthetics or your own Playwright tests**: those are great if your team writes and maintains test code. JourneyGuard is for shops and agencies that don't: presets find a buyable product through the WooCommerce Store API or Shopify's `products.json`, so there is nothing to write and little to break when the theme changes.
 - **Safety built in**: an in-page guard and a network backstop make sure a check never places an order, which hand-written tests rarely guarantee.
-- **Answers, not stack traces**: every failure comes with a likely cause and what to check, in English or Greek.
+- **Answers, not stack traces**: every failure comes with a likely cause and what to check, in English, Greek or Spanish.
 - **Free and self-hosted**: MIT licensed, one container, your data stays on your server.
 
 ## Safe by design
@@ -226,7 +226,7 @@ Run the same journeys after every deploy and fail the pipeline if checkout broke
 
 - Every client site in one dashboard, each with its own journeys and schedule ([`examples/agency.yml`](examples/agency.yml)).
 - A self-contained HTML report with your name and link (`report.brandName`, `report.brandUrl`) to send to the client.
-- Alerts and reports in English or Greek.
+- Alerts and reports in English, Greek or Spanish.
 - Want to offer monitoring under your own brand without running servers? Ask about our [reseller programme](mailto:info@nxdpro.com?subject=JourneyGuard%20for%20agencies).
 
 ## Roadmap

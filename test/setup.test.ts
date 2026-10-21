@@ -117,3 +117,15 @@ test('setup without a terminal uses defaults and never overwrites existing secre
   assert.equal(config.alerts.length, 0);
   assert.equal(config.settings.language, 'en');
 });
+
+test('guided Spanish setup writes the Spanish language and messages', async () => {
+  const sub = path.join(dir, 'es');
+  await (await import('node:fs/promises')).mkdir(sub);
+  const p = scripted(['3', '']);
+  const result = await runSetup({ configFile: path.join(sub, 'journeyguard.yml'), url: shop.url, interactive: true, prompter: p });
+  const env = envOf(await readFile(result.envFile, 'utf8'));
+  const config = await loadConfig(result.configFile, env);
+  assert.equal(config.settings.language, 'es');
+  assert.ok(p.said.some((m) => m.includes('Configuración de JourneyGuard')));
+  assert.ok(p.said.some((m) => m.includes('Siguientes pasos')));
+});

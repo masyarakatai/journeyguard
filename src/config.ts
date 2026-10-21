@@ -197,7 +197,7 @@ export function normalizeConfig(raw: unknown, env: NodeJS.ProcessEnv = process.e
       problems.push(`settings.${key}: ${(e as Error).message}`);
     }
   }
-  if (!['en', 'el'].includes(settings.language)) problems.push('settings.language: use "en" or "el"');
+  if (!['en', 'el', 'es'].includes(settings.language)) problems.push('settings.language: use "en", "el" or "es"');
   if (typeof settings.retries !== 'number' || settings.retries < 0 || settings.retries > 5) {
     problems.push('settings.retries: must be a number between 0 and 5');
   }

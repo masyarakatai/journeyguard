@@ -62,7 +62,7 @@ settings:
   timeout: 30s           # max wait per step
   retries: 1             # re-run once before declaring a failure
   safeMode: true         # never click "place order" / "pay" buttons
-  language: ${opts.language ?? 'en'}           # en | el  (reports and alerts)
+  language: ${opts.language ?? 'en'}           # en | el | es  (reports and alerts)
   dataDir: ./journeyguard-data
   dashboard:
     host: 127.0.0.1      # the Docker image listens on all interfaces automatically

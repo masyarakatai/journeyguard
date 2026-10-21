@@ -84,4 +84,4 @@ POSTs JSON to any URL, for n8n, Make, Zapier, PagerDuty bridges or your own syst
 
 `event` is `failure`, `recovery` or `test`.
 
-Set `language: el` to receive alerts in Greek, and `dashboard.publicUrl` to include a link to the dashboard.
+Set `language: el` for Greek or `language: es` for Spanish alerts, and `dashboard.publicUrl` to include a link to the dashboard.

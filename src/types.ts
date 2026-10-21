@@ -1,6 +1,6 @@
 import type { Page } from 'playwright';
 
-export type Language = 'en' | 'el';
+export type Language = 'en' | 'el' | 'es';
 
 /** A selector can be a single Playwright selector or a list of fallbacks (first match wins). */
 export type SelectorInput = string | string[];

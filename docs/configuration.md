@@ -12,7 +12,7 @@ Any value can reference an environment variable: `${NAME}` or `${NAME:-default}`
 | `timeout` | `30s` | Maximum wait for each step. |
 | `retries` | `1` | Re-runs a failed journey before reporting it. A journey that passes on retry is marked as a warning (*intermittent problem*). |
 | `safeMode` | `true` | Refuses order/payment actions. Only an explicit `false` turns it off; an empty or unset `${VARIABLE}` keeps it on. See [safety](safety.md). |
-| `language` | `en` | `en` or `el`. Stage names, diagnosis, dashboard, reports and alerts. |
+| `language` | `en` | `en`, `el` or `es`. Stage names, diagnosis, dashboard, reports and alerts. |
 | `dataDir` | `./journeyguard-data` | Where runs and screenshots are stored, relative to the config file. `JOURNEYGUARD_DATA_DIR` overrides it. |
 | `keepRuns` | `200` | Runs kept per journey; older ones are deleted. |
 | `headers` | `{ X-JourneyGuard: "1" }` | Extra headers on requests to the monitored site (never to third-party scripts, images or payment providers). |

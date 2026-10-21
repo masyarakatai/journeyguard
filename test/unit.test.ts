@@ -6,6 +6,7 @@ import { isDangerousTarget, normalizeLabel, orderRequestReason, type ClickTarget
 import { detectFromHtml, findContactPath, hasContactForm, suggestJourneys } from '../src/detect.js';
 import { errorPageLabel } from '../src/presets/common.js';
 import { localizeError } from '../src/i18n.js';
+import { label } from '../src/presets/options.js';
 import { transition } from '../src/alerts/index.js';
 import { buildMessage } from '../src/alerts/message.js';
 import { diagnose } from '../src/diagnose.js';
@@ -282,4 +283,16 @@ test('Greek reports translate common step errors and keep unknown ones', () => {
   assert.equal(localizeError('Expected payment method is missing: Viva (offered: Αντικαταβολή)', 'el'), 'Λείπει ο τρόπος πληρωμής: Viva (διαθέσιμοι: Αντικαταβολή)');
   assert.equal(localizeError('HTTP 500 on https://shop.gr/', 'en'), 'HTTP 500 on https://shop.gr/');
   assert.equal(localizeError('Something new', 'el'), 'Something new');
+});
+
+test('Spanish translates diagnosis, dashboard labels and common step errors', () => {
+  const es = diagnose(fakeRun(), 'es');
+  assert.match(es[0]!.title, /PHP\/WordPress|fatal/i);
+  assert.match(es[0]!.detail, /plugin|tema/i);
+  assert.equal(label('es', 'checkout'), 'Proceso de compra');
+  assert.equal(localizeError('HTTP 500 on https://shop.es/checkout/', 'es'), 'HTTP 500 en la página https://shop.es/checkout/');
+  assert.equal(localizeError('Something new', 'es'), 'Something new');
+  const alert = buildMessage(Object.assign(fakeRun(), { hints: es }), 'failure', 'es');
+  assert.match(alert.title, /ha fallado/);
+  assert.match(alert.text, /Causa probable/);
 });

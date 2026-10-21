@@ -77,6 +77,44 @@ const STRINGS = {
     queued: 'Ήδη σε αναμονή…',
     downloadReport: 'Λήψη αναφοράς',
   },
+  es: {
+    passed: 'Correcto',
+    failed: 'Fallido',
+    warning: 'Advertencia',
+    not_tested: 'No comprobado',
+    journeyFailed: 'El recorrido de {journey} ha fallado',
+    journeyRecovered: '{journey} vuelve a funcionar',
+    failedAt: 'Falló en',
+    error: 'Error',
+    likelyCause: 'Causa probable',
+    checkedAt: 'Comprobado el',
+    report: 'Informe de estado',
+    site: 'Sitio',
+    journey: 'Recorrido',
+    duration: 'Duración',
+    details: 'Detalles',
+    evidence: 'Pruebas',
+    screenshot: 'Captura en el momento del fallo',
+    consoleErrors: 'Errores del navegador',
+    failedRequests: 'Solicitudes fallidas',
+    noProblems: 'Todos los recorridos funcionan.',
+    problemFound: 'problema necesita atención.',
+    problemsFound: 'problemas necesitan atención.',
+    generated: 'Generado',
+    poweredBy: 'Monitorizado con JourneyGuard',
+    discovered: 'Observaciones',
+    lastRun: 'Última comprobación',
+    history: 'Historial',
+    noRuns: 'Aún no hay comprobaciones. Ejecuta "journeyguard run" o espera al programador.',
+    runNow: 'Comprobar ahora',
+    monitorDown: 'JourneyGuard no puede realizar comprobaciones',
+    monitorDownDetail: 'Las últimas comprobaciones no se pudieron ejecutar, así que los problemas de tus sitios pasarían desapercibidos. Revisa el servidor: el navegador podría no iniciar, el disco estar lleno o no haber suficiente memoria.',
+    monitorUp: 'JourneyGuard vuelve a comprobar',
+    monitorUpDetail: 'Las comprobaciones vuelven a ejecutarse con normalidad.',
+    running: 'Ejecutando…',
+    queued: 'Ya está en cola…',
+    downloadReport: 'Descargar informe',
+  },
 } as const;
 
 export type MessageKey = keyof (typeof STRINGS)['en'];
@@ -97,8 +135,8 @@ export const STATUS_ICON: Record<StageStatus, string> = {
 };
 
 /**
- * Step errors are written in English because the diagnosis rules read them. For Greek reports and
- * alerts the most common ones are translated when shown; anything else stays as written.
+ * Step errors are written in English because the diagnosis rules read them. For Greek and Spanish
+ * reports and alerts the most common ones are translated when shown; anything else stays as written.
  */
 const GREEK_ERRORS: [RegExp, string][] = [
   [/^HTTP (\d+) on (\S+)$/, 'HTTP $1 στη σελίδα $2'],
@@ -130,8 +168,40 @@ const GREEK_ERRORS: [RegExp, string][] = [
   [/^This product loads its options on demand.*$/, 'Το προϊόν φορτώνει τις επιλογές του δυναμικά, οπότε δεν φαίνεται ποιος συνδυασμός είναι διαθέσιμος. Ορίστε productUrl σε απλό προϊόν.'],
 ];
 
+const SPANISH_ERRORS: [RegExp, string][] = [
+  [/^HTTP (\d+) on (\S+)$/, 'HTTP $1 en la página $2'],
+  [/^Page did not load within (.+?): (\S+)$/, 'La página no cargó en $1: $2'],
+  [/^Could not open (\S+): (.*)$/, 'No se pudo abrir la página $1: $2'],
+  [/^Element not visible after (.+?): (.+)$/, 'El elemento no apareció en $1: $2'],
+  [/^Page shows an error: (.+)$/, 'La página muestra un error: $1'],
+  [/^Clicked "add to cart" but the cart is still empty$/, 'Se pulsó «añadir al carrito», pero el carrito sigue vacío'],
+  [/^No confirmation that the product was added to the cart$/, 'No apareció confirmación de que el producto se añadiera al carrito'],
+  [/^Checkout sent us back to an empty cart.*$/, 'El proceso de compra volvió a un carrito vacío: se perdió el carrito (normalmente por la caché o las cookies)'],
+  [/^Checkout says there are no available payment methods$/, 'El proceso de compra indica que no hay métodos de pago disponibles'],
+  [/^Checkout shows no payment method to choose$/, 'El proceso de compra no muestra ningún método de pago'],
+  [/^Payment methods section did not appear on checkout$/, 'La sección de métodos de pago no apareció en el proceso de compra'],
+  [/^Expected payment method is missing: (.+) \(offered: (.*)\)$/, 'Falta el método de pago: $1 (disponibles: $2)'],
+  [/^No product is in stock and purchasable.*$/, 'No hay ningún producto disponible para comprar'],
+  [/^The form could not send the message: (.+)$/, 'El formulario no pudo enviar el mensaje: $1'],
+  [/^No confirmation message appeared after sending the form$/, 'No apareció un mensaje de confirmación después de enviar el formulario'],
+  [/^No contact form found on (\S+)$/, 'No se encontró ningún formulario de contacto en $1'],
+  [/^SSL certificate expires in (\d+) day\(s\)$/, 'El certificado SSL caduca en $1 días'],
+  [/^SSL certificate expired (\d+) day\(s\) ago$/, 'El certificado SSL caducó hace $1 días'],
+  [/^Site is not served over HTTPS$/, 'El sitio no se sirve mediante HTTPS'],
+  [/^The form has a CAPTCHA.*$/, 'El formulario tiene un CAPTCHA, así que ningún robot (tampoco JourneyGuard) puede enviarlo. Permite el encabezado de JourneyGuard o usa una clave de prueba.'],
+  [/^The form's anti-spam or anti-robot check rejected the test \("(.*)"\).*$/, 'La protección antispam o antirrobots del formulario rechazó la prueba («$1»), así que no se envió nada. Permite JourneyGuard y envía un mensaje manualmente para comprobar que no se bloquea a los visitantes reales.'],
+  [/^The form treated the test message as spam.*$/, 'El formulario consideró spam el mensaje de prueba (lo bloqueó un plugin antispam). Permite JourneyGuard y comprueba que no se rechacen mensajes reales.'],
+  [/^The form rejected the test input(?:: "(.*)")?\..*$/, 'El formulario rechazó los datos de prueba ($1). Indica qué valores debe rellenar la opción «fields».'],
+  [/^(.+) blocked the monitor \(HTTP (\d+)\) on (\S+)\..*$/, '$1 bloqueó la comprobación (HTTP $2) en $3. Permite las solicitudes con el encabezado X-JourneyGuard o su dirección IP.'],
+  [/^Something on the page covers the (.+), so it could not be clicked \((.*)\)\..*$/, 'Algo en la página cubre «$1» y no se puede pulsar ($2). Normalmente es un banner de cookies o una ventana emergente que no se cerró.'],
+  [/^The cart total is zero.*$/, 'El total del carrito es cero, así que el proceso de compra no solicita el pago. Indica productUrl con un producto que tenga precio para comprobar los métodos de pago.'],
+  [/^This product loads its options on demand.*$/, 'El producto carga sus opciones dinámicamente, así que no se puede saber qué combinación está disponible. Indica productUrl con un producto sencillo.'],
+];
+
 export function localizeError(text: string, lang: Language): string {
-  if (lang !== 'el' || !text) return text;
-  for (const [pattern, greek] of GREEK_ERRORS) if (pattern.test(text)) return text.replace(pattern, greek);
+  if (!text) return text;
+  const errors = lang === 'el' ? GREEK_ERRORS : lang === 'es' ? SPANISH_ERRORS : undefined;
+  if (!errors) return text;
+  for (const [pattern, translation] of errors) if (pattern.test(text)) return text.replace(pattern, translation);
   return text;
 }

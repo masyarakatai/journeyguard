@@ -55,6 +55,7 @@ const T = {
     written: (f: string) => `Saved ${f}`,
     keptEnv: (k: string) => `Kept the existing ${k} in .env`,
     password: (p: string) => `Dashboard password: ${p}  (any username; stored in .env)`,
+    hello: 'JourneyGuard is connected ✅ You will get a message here when a journey breaks or recovers.',
     next: 'Next steps:',
     nextDocker: 'With Docker:   docker compose up -d   then open http://<server>:8080',
     nextNode: 'With Node.js:  journeyguard run   (one check now)   ·   journeyguard start   (keeps watching)',
@@ -86,9 +87,42 @@ const T = {
     written: (f: string) => `Αποθηκεύτηκε το ${f}`,
     keptEnv: (k: string) => `Κράτησα την υπάρχουσα τιμή ${k} στο .env`,
     password: (p: string) => `Κωδικός dashboard: ${p}  (οποιοδήποτε όνομα χρήστη· αποθηκεύτηκε στο .env)`,
+    hello: 'Το JourneyGuard συνδέθηκε ✅ Θα λάβεις μήνυμα εδώ όταν μια διαδρομή αποτύχει ή επανέλθει.',
     next: 'Επόμενα βήματα:',
     nextDocker: 'Με Docker:   docker compose up -d   και άνοιξε το http://<server>:8080',
     nextNode: 'Με Node.js:  journeyguard run   (ένας έλεγχος τώρα)   ·   journeyguard start   (συνεχής έλεγχος)',
+  },
+  es: {
+    welcome: `Configuración de JourneyGuard ${VERSION}. Pulsa Enter para aceptar el valor entre [corchetes].`,
+    url: 'Dirección del sitio web (por ejemplo, https://mi-tienda.com)',
+    badUrl: 'Eso no parece una dirección web. Inténtalo de nuevo, por ejemplo, https://mi-tienda.com',
+    detecting: 'Analizando el sitio…',
+    detected: (p: string, j: string) => `Encontrado: ${p}. Comprobaré: ${j}.`,
+    notReached: (e: string) => `No se pudo abrir el sitio (${e}). Configuraré una comprobación básica del sitio web; puedes añadir más después.`,
+    alerts: '¿Dónde deben llegar las alertas?\n  1) Telegram   2) Discord   3) Email   4) Slack   5) En ningún sitio por ahora\nElige',
+    tgHelp: 'En Telegram, abre @BotFather, envía /newbot, sigue los pasos y copia el token que te dé.',
+    tgToken: 'Token del bot',
+    tgBad: (e: string) => `Telegram no aceptó ese token (${e}). Inténtalo de nuevo o pulsa Enter para omitir las alertas.`,
+    tgBot: (n: string) => `Conectado a @${n}.`,
+    tgSendNow: (n: string) => `Ahora abre @${n} en Telegram (o añádelo a un grupo), envíale cualquier mensaje y pulsa Enter`,
+    tgChat: (c: string) => `Chat encontrado: ${c}`,
+    tgNoChat: 'Aún no se encontró ningún mensaje. Pega el ID del chat manualmente (o pulsa Enter para volver a intentarlo)',
+    testSent: 'Mensaje de prueba enviado. Comprueba que haya llegado.',
+    testFailed: (e: string) => `El mensaje de prueba falló (${e}). Puedes corregir el valor en .env y ejecutar "journeyguard test-alerts".`,
+    dcHelp: 'En Discord: ajustes del canal › Integraciones › Webhooks › Nuevo webhook › Copiar URL del webhook.',
+    dcUrl: 'URL del webhook de Discord',
+    slHelp: 'Crea un webhook entrante en https://api.slack.com/messaging/webhooks y copia su URL.',
+    slUrl: 'URL del webhook de Slack',
+    smtp: 'Servidor SMTP como URL, por ejemplo, smtps://usuario:contraseña@smtp.example.com:465',
+    mailTo: 'Enviar alertas a (dirección de email)',
+    mailFrom: 'Enviar alertas desde (dirección de email)',
+    written: (f: string) => `Guardado ${f}`,
+    keptEnv: (k: string) => `Se conservó el ${k} existente en .env`,
+    password: (p: string) => `Contraseña del dashboard: ${p}  (cualquier usuario; guardada en .env)`,
+    hello: 'JourneyGuard está conectado ✅ Recibirás un mensaje aquí cuando un recorrido falle o se recupere.',
+    next: 'Siguientes pasos:',
+    nextDocker: 'Con Docker:   docker compose up -d   y abre http://<servidor>:8080',
+    nextNode: 'Con Node.js:  journeyguard run   (una comprobación ahora)   ·   journeyguard start   (sigue comprobando)',
   },
 };
 
@@ -135,7 +169,7 @@ async function postJson(fetchImpl: Fetch, url: string, body: unknown): Promise<v
 
 async function askAlerts(p: Prompter, t: (typeof T)['en'], fetchImpl: Fetch): Promise<AlertChoice | undefined> {
   const choice = (await p.ask(t.alerts, '1')).trim();
-  const hello = 'JourneyGuard is connected ✅ You will get a message here when a journey breaks or recovers.';
+  const hello = t.hello;
 
   if (choice === '1') {
     p.say(t.tgHelp);
@@ -264,8 +298,8 @@ export async function runSetup(opts: SetupOptions): Promise<SetupResult> {
   try {
     let lang: Language = opts.language ?? 'en';
     if (p && opts.interactive && !opts.language) {
-      const l = (await p.ask('Language / Γλώσσα: 1) English  2) Ελληνικά', '1')).trim();
-      lang = l === '2' || /^el|^gr|ελλ/i.test(l) ? 'el' : 'en';
+      const l = (await p.ask('Language / Γλώσσα / Idioma: 1) English  2) Ελληνικά  3) Español', '1')).trim();
+      lang = l === '2' || /^el|^gr|ελλ/i.test(l) ? 'el' : l === '3' || /^es|^spa|^cast/i.test(l) ? 'es' : 'en';
     }
     const t = T[lang];
     if (p && opts.interactive) p.say(t.welcome);

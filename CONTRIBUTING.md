@@ -6,7 +6,7 @@ Thanks for helping small businesses catch broken checkouts and forms before thei
 
 - **Report a false alarm or a missed failure.** These are the most valuable issues. Include the platform, the preset, the dashboard error and, if you can, the screenshot.
 - **Request or build a preset** for a platform (PrestaShop, OpenCart, Magento, Wix, Squarespace, booking systems…).
-- **Add diagnosis rules.** If you know what a symptom usually means, add it to [`src/diagnose.ts`](src/diagnose.ts) in English and Greek.
+- **Add diagnosis rules.** If you know what a symptom usually means, add it to [`src/diagnose.ts`](src/diagnose.ts) in English, Greek and the supported translations.
 - **Translate** dashboard, alerts and diagnosis into another language ([`src/i18n.ts`](src/i18n.ts), [`src/presets/options.ts`](src/presets/options.ts)).
 - **Improve the docs**, especially setup guides for specific hosts and firewalls.
 

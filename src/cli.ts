@@ -16,7 +16,7 @@ import { startDemoShop, BREAK_MODES, type BreakMode } from './demo/shop.js';
 import { Store } from './store.js';
 import { infoList } from './render.js';
 import { localizeError } from './i18n.js';
-import type { Config, RunResult } from './types.js';
+import type { Config, Language, RunResult } from './types.js';
 import { formatDuration, slugify } from './util.js';
 import { VERSION } from './version.js';
 
@@ -52,7 +52,7 @@ ${bold('Options')}
   --headed              Show the browser window
   --port <n>            Dashboard port (start/serve/demo)
   --host <addr>         Dashboard host (start/serve/demo)
-  --lang <en|el>        check: language of the results (default: el for .gr/.cy sites, otherwise en)
+  --lang <en|el|es>     check: language of the results (default: el for .gr/.cy sites, otherwise en)
   --send-test-message   check: really send the contact form (by default it is only filled in)
   --allow-no-password   Allow serving the dashboard on a public address without a password
   --break <mode>        Demo failure: ${BREAK_MODES.filter((m) => m !== 'none').join(', ')}
@@ -61,14 +61,14 @@ ${bold('Options')}
   -v, --version         Show version
 `;
 
-function printRun(run: RunResult, dataDir?: string, lang: 'en' | 'el' = 'en'): void {
+function printRun(run: RunResult, dataDir?: string, lang: Language = 'en'): void {
   const tag = run.status === 'failed' ? red(bold('FAILED')) : run.status === 'warning' ? yellow(bold('WARNING')) : green(bold('PASSED'));
   console.log(`\n${bold(run.siteName)} › ${run.journeyName}  ${tag}  ${dim(formatDuration(run.durationMs))}${run.attempts > 1 ? dim(` (${run.attempts} attempts)`) : ''}`);
   for (const s of run.stages) {
     if (s.status === 'passed') console.log(`  ${green('✔')} ${s.name}`);
     else if (s.status === 'failed') console.log(`  ${red('✖')} ${s.name} ${dim('—')} ${red(localizeError(s.error ?? '', lang))}`);
     else if (s.status === 'warning') console.log(`  ${yellow('!')} ${s.name} ${dim('—')} ${yellow(localizeError(s.reason ?? '', lang))}`);
-    else console.log(`  ${dim('○')} ${dim(`${s.name} — ${lang === 'el' ? 'δεν ελέγχθηκε' : 'not tested'}${s.reason ? ` (${localizeError(s.reason, lang)})` : ''}`)}`);
+    else console.log(`  ${dim('○')} ${dim(`${s.name} — ${lang === 'el' ? 'δεν ελέγχθηκε' : lang === 'es' ? 'no comprobado' : 'not tested'}${s.reason ? ` (${localizeError(s.reason, lang)})` : ''}`)}`);
   }
   for (const hint of run.hints) {
     const color = hint.severity === 'critical' ? red : hint.severity === 'warning' ? yellow : cyan;
@@ -201,7 +201,7 @@ async function cmdCheck(url: string | undefined, values: Record<string, string |
   const target = /^https?:\/\//i.test(url) ? url : `https://${url}`;
   const d = await detect(target);
   const home = new URL(d.url);
-  const lang = values.lang === 'el' || values.lang === 'en' ? values.lang : /\.(gr|cy)$/i.test(home.hostname) ? 'el' : 'en';
+  const lang = values.lang === 'el' || values.lang === 'en' || values.lang === 'es' ? values.lang : /\.(gr|cy)$/i.test(home.hostname) ? 'el' : 'en';
   const send = !!values['send-test-message'];
   const journeys = d.journeys.map((j) => (j.preset === 'contact-form' ? { ...j, options: { ...(j.options ?? {}), submit: send } } : j));
   const dataDir = process.env.JOURNEYGUARD_DATA_DIR ?? (await mkdtemp(path.join(os.tmpdir(), 'journeyguard-check-')));

@@ -81,7 +81,7 @@ async function newContext(browser: Browser, settings: Settings, site: ResolvedSi
   const context = await browser.newContext({
     userAgent: `${chrome} ${settings.userAgentSuffix}`.trim(),
     viewport: settings.viewport,
-    locale: settings.language === 'el' ? 'el-GR' : 'en-US',
+    locale: settings.language === 'el' ? 'el-GR' : settings.language === 'es' ? 'es-ES' : 'en-US',
     // Service-worker requests would bypass the routing below (headers and the order backstop).
     serviceWorkers: 'block',
   });
@@ -277,13 +277,13 @@ async function attempt(browser: Browser, site: ResolvedSite, journey: ResolvedJo
       failedStage = stage.name;
       evidence = await captureEvidence(page, dir, consoleErrors, failedRequests, lastStatus);
       blocked = {
-        reason: settings.language === 'el' ? `Δεν έγινε: απέτυχε το «${stage.name}»` : `Not reached: "${stage.name}" failed`,
+        reason: settings.language === 'el' ? `Δεν έγινε: απέτυχε το «${stage.name}»` : settings.language === 'es' ? `No se alcanzó: falló «${stage.name}»` : `Not reached: "${stage.name}" failed`,
         status: 'failed',
       };
     } else if (stageNotTested) {
       runtimeNotTested = true;
       blocked = {
-        reason: settings.language === 'el' ? `Δεν έγινε: δεν ελέγχθηκε το «${stage.name}»` : `Not reached: "${stage.name}" could not be tested`,
+        reason: settings.language === 'el' ? `Δεν έγινε: δεν ελέγχθηκε το «${stage.name}»` : settings.language === 'es' ? `No se alcanzó: no se pudo comprobar «${stage.name}»` : `Not reached: "${stage.name}" could not be tested`,
         status: 'not_tested',
       };
     }
